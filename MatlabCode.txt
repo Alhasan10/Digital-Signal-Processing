@@ -1,0 +1,165 @@
+%{
+Ghassan Qandeel 1212397
+Alhassan Manasarh 1211705
+Johny Bajjali 1210566
+%}
+%{
+%here if you import the data by his name in the file can help you to not
+%change the variables data 
+A_ECG1= ;%third column in ECG1
+A_ECG2= ;%third column in ECG2
+A2_ECG1=;%fourth column in ECG1
+A2_ECG2= ;%fourth column in ECG2
+temp_ECG1=;%second column in ECG 1
+temp_ECG2=;%second column in ECG 2
+%%%%%%%%%%%%%
+%}
+
+t_5sec1=temp_ECG1.*(temp_ECG1<5);
+t_5sec2=temp_ECG2.*(temp_ECG2<5);
+
+
+figure ;
+subplot(2, 1, 1); 
+plot(temp_ECG1,A2_ECG1 );
+title('ECG 1 ');
+xlabel('time in full time');
+ylabel('A');
+
+
+subplot(2, 1, 2); 
+plot(t_5sec1, A2_ECG1 , '-r');
+title('ECG 1');
+xlabel('time of first 5 secons');
+ylabel('A');
+
+%%%%%%%%%%%%%%%%%%%
+figure ;
+
+subplot(2, 1, 1);  
+plot(temp_ECG1,A_ECG1 );
+title('ECG 1 minus amp ');
+xlabel('time in full time');
+ylabel('A');
+
+
+subplot(2, 1, 2);
+plot(t_5sec1, A_ECG1 , '-r');
+title('ECG 1 minus amp');
+xlabel('time of first 5 secons');
+ylabel('A');
+
+
+
+%%%%%%%%%%%%%%%%%%%
+figure ;
+
+subplot(2, 1, 1);  
+plot(temp_ECG2,A2_ECG2 );
+title('ECG 2 ');
+xlabel('time in full time');
+ylabel('A');
+
+
+subplot(2, 1, 2); 
+plot(t_5sec2, A2_ECG2 , '-r');
+title('ECG 2');
+xlabel('time of first 5 secons');
+ylabel('A');
+
+%%%%%%%%%%%%
+figure;
+
+subplot(2, 1, 1); 
+plot(temp_ECG2,A_ECG2 );
+title('ECG 2 minus  amp');
+xlabel('time in full time');
+ylabel('A');
+
+
+subplot(2, 1, 2);  
+plot(t_5sec2, A_ECG2 , '-r');
+title('ECG 2 minus amp');
+xlabel('time of first 5 secons');
+ylabel('A');
+
+
+
+% Define the filter coefficients
+a = [1, -1]; % Coefficients for the output HP(n)
+b = [-1/32, zeros(1, 15), 1, -1, zeros(1, 14), 1/32]; % Coefficients for the input X(n)
+
+% Load your ECG signals (assuming they are stored in variables ECG1 and ECG2)
+ ECG1 = A_ECG1;
+ ECG2 = A_ECG2 ;
+ 
+% Plot the frequency response
+figure;
+freqz(b, a, 1024);
+title('Frequency Response of the High-Pass Filter');
+
+
+% Apply the filter to ECG1 and ECG2
+filtered_ECG1 = filter(b, a, ECG1);
+filtered_ECG2 = filter(b, a, ECG2);
+
+% Plot the original and filtered ECG1 signals
+figure;
+
+plot(filtered_ECG1);
+title('Filtered ECG1 Signal');
+
+% Plot the original and filtered ECG2 signals
+figure;
+
+plot(filtered_ECG2);
+title('Filtered ECG2 Signal');
+
+
+
+%for the low pass filter  
+
+% Coefficients of the numerator
+b1 = [1, 0, 0, 0, 0, 0, -2, 0, 0, 0, 0, 0, 1];
+
+% Coefficients of the denominator
+a1 = [1, -2, 1];
+
+% Plot the frequency response
+figure;
+freqz(b1, a1, 1024);
+title('Frequency Response of the Low-Pass Filter');
+
+% Apply the filter to ECG1 and ECG2
+filteredLP_ECG1 = filter(b1, a1, ECG1);
+filteredLP_ECG2 = filter(b1, a1, ECG2);
+
+% Plot the original and filtered ECG1 signals
+figure;
+
+plot(filteredLP_ECG1);
+title('Filtered ECG1 Signal on low pass filter ');
+
+% Plot the original and filtered ECG2 signals
+figure;
+
+plot(filteredLP_ECG2);
+title('Filtered ECG2 Signal on low pass filter');
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% pass the signal to low pass after pass it
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% to high pass
+
+% Apply the filter to ECG1 and ECG2
+filteredDONE_ECG1 = filter(b1, a1, filtered_ECG1);
+filteredDONE_ECG2 = filter(b1, a1, filtered_ECG2);
+
+% Plot the original and filtered ECG1 signals
+figure;
+
+plot(filteredDONE_ECG1);
+title('Filtered ECG1 Signal DONE');
+
+% Plot the original and filtered ECG2 signals
+figure;
+plot(filteredDONE_ECG2);
+title('Filtered ECG2 Signal DONE');
